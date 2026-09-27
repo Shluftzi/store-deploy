@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Shluftzi Store Deployment — unified Apple App Store and Google Play pipeline status">
+  <title>Shluftzi Store Deployment</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <p class="eyebrow">Projects Manager · Release / QA</p>
+      <h1>Shluftzi Store Deployment</h1>
+      <p class="lede">One identical process for every app — Apple App Store and Google Play — from prep through release, with live GO / NO-GO status.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="pipeline" aria-labelledby="pipeline-heading">
+      <h2 id="pipeline-heading">Unified store pipeline</h2>
+      <p class="section-intro">The same six steps apply to every app on both stores. Status cards below map each app to where it sits in this process.</p>
+      <ol class="pipeline-steps">
+        <li>
+          <span class="step-num">1</span>
+          <div>
+            <h3>Prep</h3>
+            <p>Confirm packaging, versioning, store listings, privacy/compliance, and signing readiness before a build is cut.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <div>
+            <h3>Build</h3>
+            <p>Produce the store-ready binary (AAB / IPA) from the release branch with the agreed version and build numbers.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <div>
+            <h3>Sign</h3>
+            <p>Apply Play App Signing / upload key or Apple distribution identity and provisioning so the store will accept the artifact.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <div>
+            <h3>Submit</h3>
+            <p>Upload the signed build and complete listing, pricing, and questionnaire fields in Play Console or App Store Connect.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">5</span>
+          <div>
+            <h3>Review</h3>
+            <p>Wait for platform review; address any rejections or required metadata / policy fixes until approved.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-num">6</span>
+          <div>
+            <h3>Release</h3>
+            <p>Roll out to production (staged or full). Release / QA owns the final GO / NO-GO gate.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="checklists" aria-labelledby="checklists-heading">
+      <h2 id="checklists-heading">Store checklists</h2>
+      <div class="checklist-grid">
+        <article class="checklist-card">
+          <h3>Google Play</h3>
+          <ul>
+            <li>Play App Signing enrolled; upload key registered</li>
+            <li>AAB (not sideload APK) for the target package</li>
+            <li>versionName / versionCode aligned with release notes</li>
+            <li>Store listing, graphics, content rating, Data safety</li>
+            <li>Target API / Play policy compliance</li>
+            <li>Internal / closed track smoke before production</li>
+          </ul>
+        </article>
+        <article class="checklist-card">
+          <h3>Apple App Store</h3>
+          <ul>
+            <li>Distribution cert + App Store provisioning profile</li>
+            <li>Archive / IPA from Xcode or CI with correct bundle ID</li>
+            <li>CFBundleShortVersionString / CFBundleVersion set</li>
+            <li>App Store Connect listing, screenshots, privacy nutrition</li>
+            <li>Export compliance / encryption answers</li>
+            <li>TestFlight smoke before App Review submit</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="status" aria-labelledby="status-heading">
+      <h2 id="status-heading">Current status</h2>
+      <p class="section-intro">Updated <time datetime="2026-09-27">2026-09-27</time>. Release / QA owns GO / NO-GO.</p>
+      <div class="status-grid">
+        <article class="status-card nogo">
+          <div class="status-badge">Play Prep · NO-GO</div>
+          <h3>Shell P0</h3>
+          <dl>
+            <dt>Google Play</dt>
+            <dd>Prep / NO-GO — v0.4.2 sideload; <code>com.shluftzi.shell</code> vc12; tablet package vc2. Nexus self-signed (not Play App Signing).</dd>
+            <dt>Apple</dt>
+            <dd>Skipped</dd>
+          </dl>
+        </article>
+        <article class="status-card nogo">
+          <div class="status-badge">Play Prep · NO-GO</div>
+          <h3>Bake</h3>
+          <dl>
+            <dt>Google Play</dt>
+            <dd>Prep / NO-GO — v0.9.0-beta sideload only</dd>
+            <dt>Apple</dt>
+            <dd>Skipped</dd>
+          </dl>
+        </article>
+        <article class="status-card nogo">
+          <div class="status-badge">Prep · NO-GO</div>
+          <h3>Prompt</h3>
+          <dl>
+            <dt>Google Play</dt>
+            <dd>Prep / NO-GO</dd>
+            <dt>Apple</dt>
+            <dd>Prep / NO-GO</dd>
+          </dl>
+        </article>
+        <article class="status-card other">
+          <div class="status-badge">Not App Store / Play</div>
+          <h3>Puk</h3>
+          <dl>
+            <dt>Platforms</dt>
+            <dd>Windows — not on App Store or Google Play</dd>
+            <dt>Microsoft Store</dt>
+            <dd>Separate empty track</dd>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="links" aria-labelledby="links-heading">
+      <h2 id="links-heading">Source of truth</h2>
+      <p><a class="notion-link" href="https://app.notion.com/p/3e81b15ab1d0811592d6e10e59361d9b" rel="noopener noreferrer" target="_blank">Open Notion project page</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Projects Manager</strong> · Release / QA owns GO / NO-GO</p>
+      <p>Updated 2026-09-27 · Shluftzi Store Deployment</p>
+    </div>
+  </footer>
+</body>
+</html>
