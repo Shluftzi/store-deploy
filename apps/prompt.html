@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Prompt — Store Deploy</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="app-page" id="app">
+    <header class="toolbar" role="banner">
+      <div class="toolbar-leading">
+        <a href="../" class="back-link">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+          Projects
+        </a>
+      </div>
+      <div class="toolbar-trailing">
+        <button type="button" class="toolbar-btn" onclick="showSettings()">
+          <span class="btn-icon">&#9881;</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-header">
+      <div class="app-header-row">
+        <span class="app-icon">&#128172;</span>
+        <h2 class="app-name">Prompt</h2>
+      </div>
+      <div class="app-meta" id="app-meta"></div>
+    </div>
+
+    <div id="content">
+      <div class="detail-empty">
+        <span class="detail-empty-icon">&#128640;</span>
+        <span class="detail-empty-text">Loading&hellip;</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared.js"></script>
+  <script>
+  (function () {
+    var APP_ID = "prompt";
+    var content = document.getElementById("content");
+    var meta = document.getElementById("app-meta");
+    var focusedField = null;
+
+    document.addEventListener("focusin", function (e) {
+      if (e.target.getAttribute && e.target.getAttribute("data-field"))
+        focusedField = e.target.getAttribute("data-field");
+    });
+    document.addEventListener("focusout", function (e) {
+      if (e.target.getAttribute && e.target.getAttribute("data-field"))
+        setTimeout(function () { focusedField = null; }, 50);
+    });
+
+    function render(app) {
+      meta.innerHTML =
+        '<span class="row-badge badge-stage">' + esc(app.stage) + '</span>' +
+        '<span class="row-badge ' + qaBadgeClass(app.qa) + '">' + esc(app.qa || "Pending") + '</span>' +
+        (app.priority ? '<span class="row-badge badge-skipped">' + esc(app.priority) + '</span>' : '') +
+        '<span style="margin-left:auto" class="updated-at">Updated ' + relTime(app.updated_at) + '</span>';
+
+      var html = '<div class="stepper-section"><h3>Deployment Stage</h3>'
+        + renderStepper(app.stage, APP_ID) + '</div>';
+
+      html += '<div class="card"><h3>Release QA</h3><div class="card-row">'
+        + '<span class="card-label">QA Status</span>'
+        + renderQAControl(app.qa) + '</div></div>';
+
+      html += '<div class="card"><h3>Details</h3>'
+        + makeField("next_needed", "Next Needed", app.next_needed)
+        + makeField("blockers", "Blockers", app.blockers)
+        + makeField("notes", "Notes", app.notes, true)
+        + '</div>';
+
+      if (app.store_rows && app.store_rows.length) {
+        html += '<div class="card"><h3>Store Targets</h3><div class="store-rows">';
+        app.store_rows.forEach(function (sr) {
+          html += '<div class="store-row"><span class="store-row-icon">' + storeIcon(sr.store) + '</span>'
+            + '<span class="store-row-name">' + esc(sr.store) + '</span>'
+            + '<span class="store-row-status">' + esc(sr.status || "—") + '</span></div>';
+        });
+        html += '</div></div>';
+      }
+
+      content.innerHTML = html;
+      bindEvents();
+    }
+
+    function makeField(field, label, value, isTextarea) {
+      var tag = isTextarea ? "textarea" : "input";
+      var val = value || "";
+      var html = '<div class="card-row">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;">'
+        + '<span class="card-label">' + label + '</span>'
+        + '<span class="save-indicator" id="save-' + field + '"></span></div>';
+      html += '<' + tag + ' class="field-input" data-field="' + field + '"'
+        + (isTextarea ? '>' + esc(val) + '</' + tag + '>' : ' type="text" value="' + esc(val).replace(/"/g, '&quot;') + '">');
+      return html + '</div>';
+    }
+
+    function bindEvents() {
+      content.querySelectorAll(".stepper-step").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          apiPostStage(APP_ID, btn.getAttribute("data-stage")).then(poll);
+        });
+      });
+      content.querySelectorAll(".segmented-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          apiPatch(APP_ID, { qa: btn.getAttribute("data-value") }).then(poll);
+        });
+      });
+      content.querySelectorAll(".field-input").forEach(function (inp) {
+        var field = inp.getAttribute("data-field");
+        var save = debounce(function () {
+          var indicator = document.getElementById("save-" + field);
+          if (indicator) flashSave(indicator);
+          var body = {};
+          body[field] = inp.value;
+          apiPatch(APP_ID, body);
+        }, 400);
+        inp.addEventListener("input", save);
+        inp.addEventListener("blur", function () {
+          var body = {};
+          body[field] = inp.value;
+          apiPatch(APP_ID, body);
+        });
+      });
+    }
+
+    function poll() {
+      apiGet("/api/apps/" + APP_ID).then(function (app) {
+        if (!focusedField) render(app);
+        else {
+          meta.innerHTML =
+            '<span class="row-badge badge-stage">' + esc(app.stage) + '</span>' +
+            '<span class="row-badge ' + qaBadgeClass(app.qa) + '">' + esc(app.qa || "Pending") + '</span>' +
+            '<span style="margin-left:auto" class="updated-at">Updated ' + relTime(app.updated_at) + '</span>';
+        }
+      }).catch(function () {});
+    }
+
+    function esc(s) { if (!s) return ""; var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+    startPoll(poll, 2500);
+  })();
+  </script>
+</body>
+</html>
