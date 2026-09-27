@@ -1,0 +1,108 @@
+{
+    "apps": [
+        {
+            "id": "bake",
+            "name": "Bake",
+            "icon": "\ud83e\uddc1",
+            "priority": "P1",
+            "stage": "Prep",
+            "qa": "NO-GO",
+            "notes": "Play Prep \u2014 not ready for store submit.",
+            "blockers": "Release QA NO-GO",
+            "next_needed": "Complete Prep checklist for Play",
+            "stores": "Google Play + Apple App Store",
+            "store_rows": [
+                {
+                    "store": "Google Play",
+                    "target": "bake",
+                    "status": "Prep"
+                },
+                {
+                    "store": "Apple App Store",
+                    "target": "Bake",
+                    "status": "Prep"
+                }
+            ],
+            "updated_at": "2026-09-27T11:48:30Z"
+        },
+        {
+            "id": "prompt",
+            "name": "Prompt",
+            "icon": "\ud83d\udcac",
+            "priority": "P1",
+            "stage": "Prep",
+            "qa": "NO-GO",
+            "notes": "Prep \u2014 store pipeline not started.",
+            "blockers": "Release QA NO-GO",
+            "next_needed": "Start Prep for store targets",
+            "stores": "Google Play + Apple App Store",
+            "store_rows": [
+                {
+                    "store": "Google Play",
+                    "target": "prompt",
+                    "status": "Prep"
+                },
+                {
+                    "store": "Apple App Store",
+                    "target": "Prompt",
+                    "status": "Prep"
+                }
+            ],
+            "updated_at": "2026-09-27T11:47:45Z"
+        },
+        {
+            "id": "puk",
+            "name": "Puk",
+            "icon": "\ud83e\ude9f",
+            "priority": "Later",
+            "stage": "Skipped",
+            "qa": "Skipped",
+            "notes": "Windows desktop \u2014 not App Store / Play. Skipped for mobile store deploy.",
+            "blockers": "N/A \u2014 not a mobile store target",
+            "next_needed": "No store action",
+            "stores": "Windows (not App Store / Play)",
+            "store_rows": [
+                {
+                    "store": "Windows",
+                    "target": "Puk",
+                    "status": "Skipped"
+                }
+            ],
+            "updated_at": "2026-09-27T11:40:30Z"
+        },
+        {
+            "id": "shell",
+            "name": "Shell",
+            "icon": "\ud83d\udc1a",
+            "priority": "P0",
+            "stage": "Prep",
+            "qa": "NO-GO",
+            "notes": "v0.4.2 sideload / packages. Play Prep \u2014 packages and store listing still blocking Release QA GO.",
+            "blockers": "Release QA NO-GO; Play Prep incomplete",
+            "next_needed": "Finish Play Prep package set and re-request Release QA",
+            "stores": "Google Play + Apple App Store",
+            "store_rows": [
+                {
+                    "store": "Google Play",
+                    "target": "shell",
+                    "status": "Prep"
+                },
+                {
+                    "store": "Apple App Store",
+                    "target": "Shell",
+                    "status": "Prep"
+                }
+            ],
+            "updated_at": "2026-09-27T11:47:43Z"
+        }
+    ],
+    "stages": [
+        "Prep",
+        "Build",
+        "Sign",
+        "Submit",
+        "Review",
+        "Release"
+    ],
+    "updated_at": "2026-09-27T11:49:10Z"
+}
